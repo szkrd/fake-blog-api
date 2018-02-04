@@ -2,17 +2,14 @@ const fs = require('fs');
 const faker = require('faker');
 const {uniqueRand} = require('./utils');
 
-String.prototype.capitalize = function () {
-  return this.charAt(0).toUpperCase() + this.slice(1);
-};
-
+const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
 const rand = (min = 1, max = 5) => faker.random.number({min, max});
 
 function seedUsers (quantity, data) {
   for (let i = 1; i <= quantity; i++) {
-    let gender = faker.random.number({min: 1, max: 2}),
-      firstName = faker.name.firstName(gender),
-      lastName = faker.name.lastName(gender);
+    let gender = faker.random.number({min: 1, max: 2});
+    let firstName = faker.name.firstName(gender);
+    let lastName = faker.name.lastName(gender);
 
     data.users.push({
       id: i,
@@ -38,9 +35,9 @@ function seedCategories (quantity, data) {
   for (let i = 1; i <= quantity; i++) {
     data.categories.push({
       id: i,
-      name: faker.lorem.words(
+      name: capitalize(faker.lorem.words(
         faker.random.number({min: 1, max: 2})
-      ).capitalize()
+      ))
     });
   }
 }
@@ -61,7 +58,7 @@ function seedTags (quantity, data) {
 function seedPosts (quantity, data) {
   let admins = data.users.filter(u => u.isAdmin);
   for (let i = 1; i <= quantity; i++) {
-    let title = faker.lorem.words(rand(4, 8)).capitalize();
+    let title = capitalize(faker.lorem.words(rand(4, 8)));
 
     data.posts.push({
       id: i,
