@@ -1,0 +1,23 @@
+{
+  "name": "fake-blog-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "create-fixtures": "node src/create-fixtures"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/szkrd/fake-blog-api.git"
+  },
+  "keywords": [],
+  "author": "Szabolcs Kurdi <szabolcs.kurdi@gmail.com> (https://github.com/szkrd)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/szkrd/fake-blog-api/issues"
+  },
+  "homepage": "https://github.com/szkrd/fake-blog-api#readme",
+  "devDependencies": {
+    "faker": "4.1.0"
+  }
+}
