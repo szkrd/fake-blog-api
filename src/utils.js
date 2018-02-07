@@ -9,6 +9,10 @@ function shuffle (arr) {
   return arr;
 }
 
+function uniqueRandFromArray (arr, count) {
+  return shuffle(arr).slice(0, count || arr.length - 1);
+}
+
 function uniqueRand (min, max, count) {
   let results = [];
   for (let i = min; i <= max; i++) {
@@ -18,5 +22,6 @@ function uniqueRand (min, max, count) {
 }
 
 module.exports = {
-  uniqueRand
+  uniqueRand,
+  uniqueRandFromArray
 };

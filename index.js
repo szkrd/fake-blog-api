@@ -36,8 +36,13 @@ router.render = (req, res) => {
   let results = res.locals.data;
   let includeText = oget(req, '_saved.query._include');
   let resource = oget(req, '_saved.params.resource');
-  if (includeText && Array.isArray(results)) {
+  if (includeText && typeof results === 'object') {
+    let multiple = Array.isArray(results);
+    results = multiple ? results : [results];
     results.forEach(result => includeTable(router.db, result, resource, includeText));
+    if (!multiple) {
+      results = results[0];
+    }
   }
   res.jsonp(results);
 };
