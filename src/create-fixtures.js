@@ -63,6 +63,7 @@ function seedPosts (quantity, data) {
     data.posts.push({
       id: i,
       title: title,
+      createdAt: faker.date.past(5),
       body: faker.lorem.paragraphs(faker.random.number({min: 2, max: 12})),
       image: faker.image.image(),
       views: faker.random.number(1500),
