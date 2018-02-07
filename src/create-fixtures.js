@@ -85,7 +85,25 @@ function seedComments (quantity, data) {
 }
 
 function seedProfile (data) {
+  let bool = faker.random.boolean;
   data.profile = faker.random.arrayElement(data.users);
+  Object.assign(data.profile, {
+    shareProfile: bool(),
+    showEmailAddress: bool(),
+    homepageUrl: faker.internet.url(),
+    introduction: faker.lorem.paragraph(),
+    language: 'en',
+    notificationsWeb: {
+      mentions: bool(),
+      likes: bool(),
+      promotions: bool()
+    },
+    notificationsEmail: {
+      mentions: bool(),
+      likes: bool(),
+      promotions: bool()
+    }
+  })
 }
 
 function connectPostsAndTags (maxTagsPerPost, data) {
