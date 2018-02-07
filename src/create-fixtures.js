@@ -87,7 +87,7 @@ function seedComments (quantity, data) {
 
 function seedProfile (data) {
   let bool = faker.random.boolean;
-  data.profile = faker.random.arrayElement(data.users);
+  data.profile = Object.assign({}, faker.random.arrayElement(data.users));
   Object.assign(data.profile, {
     shareProfile: bool(),
     showEmailAddress: bool(),
