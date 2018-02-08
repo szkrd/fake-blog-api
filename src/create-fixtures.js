@@ -59,12 +59,25 @@ function seedPosts (quantity, data) {
   let adminIds = data.users.filter(u => u.isAdmin).map(user => user.id);
   for (let i = 1; i <= quantity; i++) {
     let title = capitalize(faker.lorem.words(rand(4, 8)));
+    let paragraphSize = faker.random.number({min: 2, max: 12});
+    let body = '';
+
+    if (paragraphSize > 3) {
+      body = faker.lorem.paragraphs(3) + ' [more] ';
+    }
+
+    body += faker.lorem.paragraphs(paragraphSize);
+
+    // add bolds
+    let bodySplit = body.split(' ');
+    uniqueRand(0, bodySplit.length, rand(0, 5)).forEach(n => bodySplit[n] = '**' + bodySplit[n] + '**');
+    body = bodySplit.join(' ');
 
     data.posts.push({
       id: i,
       title: title,
       createdAt: faker.date.past(5),
-      body: faker.lorem.paragraphs(faker.random.number({min: 2, max: 12})),
+      body,
       image: faker.image.image(),
       views: faker.random.number(1500),
       recommends: faker.random.number(50),
@@ -104,7 +117,7 @@ function seedProfile (data) {
       likes: bool(),
       promotions: bool()
     }
-  })
+  });
 }
 
 function connectPostsAndTags (maxTagsPerPost, data) {
