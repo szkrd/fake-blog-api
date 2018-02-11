@@ -8,11 +8,11 @@ function onlyFilter (results, filter = '', prev = {}) {
       let currentProp = f.shift(); // tags
       acc[currentProp] = item[currentProp]; // ret[tags]
       if (f.length) {
-        acc[currentProp] = onlyFilter(acc[currentProp], f.join('.'))
+        acc[currentProp] = onlyFilter(acc[currentProp], f.join('.'));
       }
 
       return acc;
-    }, {})
+    }, {});
   });
   // flatten
   if (!filter.includes(',')) {

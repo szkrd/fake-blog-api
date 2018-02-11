@@ -1,6 +1,6 @@
 const fs = require('fs');
 const faker = require('faker');
-const {uniqueRand, uniqueRandFromArray} = require('./utils');
+const {uniqueRand} = require('./utils');
 
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
 const rand = (min = 1, max = 5) => faker.random.number({min, max});
@@ -73,7 +73,9 @@ function seedPosts (quantity, data) {
 
     // add bolds
     let bodySplit = body.split(' ');
-    uniqueRand(0, bodySplit.length, rand(0, 5)).forEach(n => bodySplit[n] = '**' + bodySplit[n] + '**');
+    uniqueRand(0, bodySplit.length, rand(0, 5)).forEach(n => {
+      bodySplit[n] = '**' + bodySplit[n] + '**';
+    });
     body = bodySplit.join(' ');
 
     let createdAt = faker.date.past(5) * 1;
