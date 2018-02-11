@@ -1,7 +1,5 @@
 function onlyFilter (results, filter = '', prev = {}) {
   let filters = filter.split(',');
-  let isArr = Array.isArray(results);
-  results = isArr ? results : [results];
   results = results.map(item => {
     return filters.reduce((acc, f) => {
       f = f.split('.'); // tags.id
@@ -18,7 +16,7 @@ function onlyFilter (results, filter = '', prev = {}) {
   if (!filter.includes(',')) {
     results = results.map(obj => obj[filter]);
   }
-  return isArr ? results : results[0];
+  return results;
 }
 
 module.exports = onlyFilter;

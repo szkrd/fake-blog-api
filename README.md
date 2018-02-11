@@ -17,13 +17,23 @@ but this may change in the future.
 
 ## API examples
 
-- users with paging - `http://localhost:3000/users?_limit=5&_page=1`
-- posts with paging - `http://localhost:3000/posts?_page=1&_limit=5`
-- posts with date range - `http://localhost:3000/posts?createdAt_gte=1388302275352&createdAt_lte=1398302275352`
-- all tags - `http://localhost:3000/tags`
-- posts with tags included (junction table) - `http://localhost:3000/posts?_limit=5&_page=1&_include=tags`
-- categories - `http://localhost:3000/categories`
-- profile - `http://localhost:3000/profile`
-- post with category and user expanded - `http://localhost:3000/posts/1?_expand=category&_expand=user`
-- posts' dates and ids only (shallow pick) `http://localhost:3000/posts?_only=createdAt,id`
-- posts' dates as an array `http://localhost:3000/posts?_only=createdAt`
+- users with paging -
+  [/users?_limit=5&_page=1](http://localhost:3000/users?_limit=5&_page=1)
+- posts with paging -
+  [/posts?_page=1&_limit=5](http://localhost:3000/posts?_page=1&_limit=5)
+- posts with date range -
+  [/posts?createdAt_gte=1388302275352&createdAt_lte=1398302275352](http://localhost:3000/posts?createdAt_gte=1388302275352&createdAt_lte=1398302275352)
+- all tags -
+  [/tags](http://localhost:3000/tags)
+- posts with tags included (junction table) -
+  [/posts?_limit=5&_page=1&_include=tags](http://localhost:3000/posts?_limit=5&_page=1&_include=tags)
+- categories -
+  [/categories](http://localhost:3000/categories)
+- profile -
+  [/profile](http://localhost:3000/profile)
+- post with category and user expanded -
+  [/posts/1?_expand=category&_expand=user](http://localhost:3000/posts/1?_expand=category&_expand=user)
+- posts' dates and ids only (shallow pick) -
+  [/posts?_only=createdAt,id](http://localhost:3000/posts?_only=createdAt,id)
+- posts' dates as an array -
+  [/posts?_only=createdAt](http://localhost:3000/posts?_only=createdAt)

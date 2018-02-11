@@ -40,17 +40,20 @@ router.render = (req, res) => {
   let resource = oget(req, '_saved.params.resource');
   let hasResults = typeof results === 'object';
 
-  if (includeText && hasResults) {
+  if (hasResults) {
     let multiple = Array.isArray(results);
     results = multiple ? results : [results];
-    results.forEach(result => includeTable(router.db, result, resource, includeText));
+    // many to many
+    if (includeText) {
+      results.forEach(result => includeTable(router.db, result, resource, includeText));
+    }
+    // shallow pick
+    if (onlyText) {
+      results = onlyFilter(results, onlyText);
+    }
     if (!multiple) {
       results = results[0];
     }
-  }
-
-  if (onlyText && hasResults) {
-    results = onlyFilter(results, onlyText);
   }
 
   res.jsonp(results);
