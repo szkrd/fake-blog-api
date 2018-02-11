@@ -5,6 +5,7 @@ const path = require('path');
 const oget = require('oget');
 const jsonServer = require('json-server');
 const includeTable = require('./src/include-table');
+const onlyFilter = require('./src/only-filter');
 
 const dbFile = 'db.json';
 if (!fs.existsSync(dbFile)) {
@@ -35,8 +36,11 @@ server.use('/:resource/:id*?', (req, res, next) => {
 router.render = (req, res) => {
   let results = res.locals.data;
   let includeText = oget(req, '_saved.query._include');
+  let onlyText = oget(req, '_saved.query._only');
   let resource = oget(req, '_saved.params.resource');
-  if (includeText && typeof results === 'object') {
+  let hasResults = typeof results === 'object';
+
+  if (includeText && hasResults) {
     let multiple = Array.isArray(results);
     results = multiple ? results : [results];
     results.forEach(result => includeTable(router.db, result, resource, includeText));
@@ -44,6 +48,11 @@ router.render = (req, res) => {
       results = results[0];
     }
   }
+
+  if (onlyText && hasResults) {
+    results = onlyFilter(results, onlyText);
+  }
+
   res.jsonp(results);
 };
 

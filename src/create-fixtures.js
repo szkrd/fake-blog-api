@@ -4,6 +4,7 @@ const {uniqueRand, uniqueRandFromArray} = require('./utils');
 
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
 const rand = (min = 1, max = 5) => faker.random.number({min, max});
+const slugify = s => s.toLowerCase().replace(/\s/g, '-');
 
 function seedUsers (quantity, data) {
   for (let i = 1; i <= quantity; i++) {
@@ -33,11 +34,13 @@ function addAdmins (quantity, data) {
 
 function seedCategories (quantity, data) {
   for (let i = 1; i <= quantity; i++) {
+    let name = capitalize(faker.lorem.words(
+      faker.random.number({min: 1, max: 2})
+    ));
     data.categories.push({
       id: i,
-      name: capitalize(faker.lorem.words(
-        faker.random.number({min: 1, max: 2})
-      ))
+      name,
+      slug: slugify(name)
     });
   }
 }
@@ -51,7 +54,7 @@ function seedTags (quantity, data) {
   [...new Set(nouns)].forEach((name, id) => data.tags.push({
     id,
     name,
-    slug: name.replace(/\s/g, '-')
+    slug: slugify(name)
   }));
 }
 
@@ -73,10 +76,12 @@ function seedPosts (quantity, data) {
     uniqueRand(0, bodySplit.length, rand(0, 5)).forEach(n => bodySplit[n] = '**' + bodySplit[n] + '**');
     body = bodySplit.join(' ');
 
+    let createdAt = faker.date.past(5) * 1;
+
     data.posts.push({
       id: i,
       title: title,
-      createdAt: faker.date.past(5),
+      createdAt,
       body,
       image: faker.image.image(),
       views: faker.random.number(1500),
@@ -121,10 +126,15 @@ function seedProfile (data) {
 }
 
 function connectPostsAndTags (maxTagsPerPost, data) {
-  let posts = data.posts.map(p => ({
-    id: p.id,
-    tags: uniqueRand(1, data.tags.length, maxTagsPerPost)
-  }));
+  const getTags = () => (uniqueRand(1, data.tags.length, rand(1, maxTagsPerPost)));
+  let posts = data.posts.map(p => {
+    let tags = getTags();
+    p.tags = tags; // stick the ids to the posts too, but this JUST SUGAR!
+    return {
+      id: p.id,
+      tags
+    };
+  });
   let id = 1;
   posts.forEach(p => {
     p.tags.forEach(t => {
