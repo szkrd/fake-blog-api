@@ -42,3 +42,5 @@ but this may change in the future.
   [/posts?_only=createdAt,id](http://localhost:3000/posts?_only=createdAt,id)
 - posts' dates as an array -
   [/posts?_only=createdAt](http://localhost:3000/posts?_only=createdAt)
+- tags with post count (cheap sum) -
+  [/tags?_include=posts&_count=posts](http://localhost:3000/tags?_include=posts&_count=posts)

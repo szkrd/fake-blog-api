@@ -6,6 +6,7 @@ const oget = require('oget');
 const jsonServer = require('json-server');
 const includeTable = require('./src/include-table');
 const onlyFilter = require('./src/only-filter');
+const arraySum = require('./src/array-sum');
 
 const port = +(process.env.PORT || 3000);
 const sleepTimeout = +(process.env.SLEEP || 0);
@@ -40,6 +41,7 @@ router.render = (req, res) => {
   let results = res.locals.data;
   let includeText = oget(req, '_saved.query._include');
   let onlyText = oget(req, '_saved.query._only');
+  let countText = oget(req, '_saved.query._count');
   let resource = oget(req, '_saved.params.resource');
   let hasResults = typeof results === 'object';
 
@@ -53,6 +55,10 @@ router.render = (req, res) => {
     // shallow pick
     if (onlyText) {
       results = onlyFilter(results, onlyText);
+    }
+    // aggregate sum
+    if (countText) {
+      results = arraySum(results, countText);
     }
     if (!multiple) {
       results = results[0];
