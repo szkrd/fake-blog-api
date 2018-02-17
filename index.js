@@ -7,6 +7,9 @@ const jsonServer = require('json-server');
 const includeTable = require('./src/include-table');
 const onlyFilter = require('./src/only-filter');
 
+const port = +(process.env.PORT || 3000);
+const sleepTimeout = +(process.env.SLEEP || 0);
+
 const dbFile = 'db.json';
 if (!fs.existsSync(dbFile)) {
   console.error(`No "${dbFile}" found.`);
@@ -56,12 +59,18 @@ router.render = (req, res) => {
     }
   }
 
-  res.jsonp(results);
+  if (!sleepTimeout) {
+    res.jsonp(results);
+  } else {
+    setTimeout(() => res.jsonp(results), sleepTimeout);
+  }
 };
 
 server.use(router);
 
-const port = +(process.env.PORT || 3000);
 server.listen(port, () => {
   console.log(`JSON Server is listening on port ${port}`);
+  if (sleepTimeout) {
+    console.log(`Responses will be held back for ${sleepTimeout / 1000}s`);
+  }
 });

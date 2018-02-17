@@ -15,6 +15,11 @@ but this may change in the future.
 - `npm run dev` - run server, watch for changes
 - `npm start` - fire up the wrapped json server
 
+## .env
+
+- `PORT` - port number, default is 3000
+- `SLEEP` - sleep time in millisec before responding, default is 0
+
 ## API examples
 
 - users with paging -
