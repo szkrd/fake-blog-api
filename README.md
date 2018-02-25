@@ -19,6 +19,8 @@ but this may change in the future.
 
 - `PORT` - port number, default is 3000
 - `SLEEP` - sleep time in millisec before responding, default is 0
+  - `SLEEP=2000` wait for 2s
+  - `SLEEP=1000-3000` random timeout between 1s and 3s
 
 ## API examples
 

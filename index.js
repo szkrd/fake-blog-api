@@ -9,7 +9,10 @@ const onlyFilter = require('./src/only-filter');
 const arraySum = require('./src/array-sum');
 
 const port = +(process.env.PORT || 3000);
-const sleepTimeout = +(process.env.SLEEP || 0);
+const sleepTimeout = (process.env.SLEEP || '0-0').split('-').map(x => ~~x);
+if (sleepTimeout.length === 1) {
+  sleepTimeout.push(sleepTimeout[0]);
+}
 
 const dbFile = 'db.json';
 if (!fs.existsSync(dbFile)) {
@@ -68,7 +71,9 @@ router.render = (req, res) => {
   if (!sleepTimeout) {
     res.jsonp(results);
   } else {
-    setTimeout(() => res.jsonp(results), sleepTimeout);
+    const sDiff = sleepTimeout[1] - sleepTimeout[0];
+    const to = sleepTimeout[0] + Math.floor(Math.random() * sDiff);
+    setTimeout(() => res.jsonp(results), to);
   }
 };
 
@@ -76,7 +81,14 @@ server.use(router);
 
 server.listen(port, () => {
   console.log(`JSON Server is listening on port ${port}`);
-  if (sleepTimeout) {
-    console.log(`Responses will be held back for ${sleepTimeout / 1000}s`);
+  if (sleepTimeout && !sleepTimeout.every(x => !x)) {
+    const single = sleepTimeout[0] === sleepTimeout[1];
+    const s0 = sleepTimeout[0] / 1000;
+    const s1 = sleepTimeout[1] / 1000;
+    if (single) {
+      console.log(`Responses will be held back for ${s0}s`);
+    } else {
+      console.log(`Responses will be held back for ${s0}-${s1}s`);
+    }
   }
 });
