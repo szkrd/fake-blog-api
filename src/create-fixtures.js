@@ -132,6 +132,7 @@ function connectPostsAndTags (maxTagsPerPost, data) {
   let posts = data.posts.map(p => {
     let tags = getTags();
     p.tags = tags; // stick the ids to the posts too, but this JUST SUGAR!
+    // p.tagIds = tags; // quick hack to store the ids only
     return {
       id: p.id,
       tags

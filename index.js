@@ -7,6 +7,7 @@ const jsonServer = require('json-server');
 const includeTable = require('./src/include-table');
 const onlyFilter = require('./src/only-filter');
 const arraySum = require('./src/array-sum');
+const arrayIncludes = require('./src/array-includes');
 
 const port = +(process.env.PORT || 3000);
 const sleepTimeout = (process.env.SLEEP || '0-0').split('-').map(x => ~~x);
@@ -42,11 +43,13 @@ server.use('/:resource/:id*?', (req, res, next) => {
 
 router.render = (req, res) => {
   let results = res.locals.data;
+  let savedQuery = oget(req, '_saved.query') || {};
   let includeText = oget(req, '_saved.query._include');
   let onlyText = oget(req, '_saved.query._only');
   let countText = oget(req, '_saved.query._count');
   let resource = oget(req, '_saved.params.resource');
   let hasResults = typeof results === 'object';
+  let hasArrayIncludes = Object.keys(savedQuery).some(key => key.endsWith('_includes'));
 
   if (hasResults) {
     let multiple = Array.isArray(results);
@@ -62,6 +65,16 @@ router.render = (req, res) => {
     // aggregate sum
     if (countText) {
       results = arraySum(results, countText);
+    }
+    // array includes
+    if (hasArrayIncludes) {
+      const filters = Object.keys(savedQuery)
+        .filter(key => key.endsWith('_includes'))
+        .reduce((acc, key) => {
+          acc[key.replace(/_includes$/, '')] = savedQuery[key];
+          return acc;
+        }, {});
+      results = arrayIncludes(results, filters);
     }
     if (!multiple) {
       results = results[0];
