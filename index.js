@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const oget = require('oget');
 const jsonServer = require('json-server');
+const repaginate = require('./src/repaginate');
 const includeTable = require('./src/include-table');
 const onlyFilter = require('./src/only-filter');
 const arraySum = require('./src/array-sum');
@@ -38,11 +39,23 @@ server.use('/:resource/:id*?', (req, res, next) => {
     query: Object.assign({}, req.query),
     params: Object.assign({}, req.params)
   };
+
+  // we have to reimplement pagination since we must operate on the full resultset...
+  // now I honestly think that json-server is pretty much useless for
+  // anything more complicated than a "todo app"
+  let unpaginate = Object.keys(req.query).some(key => key.endsWith('_includes'));
+
+  if (unpaginate) {
+    delete req.query._limit;
+    delete req.query._page;
+    req._saved.repaginate = true;
+  }
   next();
 });
 
 router.render = (req, res) => {
   let results = res.locals.data;
+  let fixPagination = oget(req, '_saved.repaginate') || false;
   let savedQuery = oget(req, '_saved.query') || {};
   let includeText = oget(req, '_saved.query._include');
   let onlyText = oget(req, '_saved.query._only');
@@ -66,7 +79,7 @@ router.render = (req, res) => {
     if (countText) {
       results = arraySum(results, countText);
     }
-    // array includes
+    // array includes: `/posts?_limit=5&_page=1&tags@id_includes=2`
     if (hasArrayIncludes) {
       const filters = Object.keys(savedQuery)
         .filter(key => key.endsWith('_includes'))
@@ -76,6 +89,16 @@ router.render = (req, res) => {
         }, {});
       results = arrayIncludes(results, filters);
     }
+
+    // since we may have skipped the pagination, we need to reimplement it
+    // (mostly copy pasted from json-server (without the lodash chain wrapper))
+    if (fixPagination) {
+      let { _end, _start, _page, _limit } = savedQuery;
+      if (_end || _limit || _page) {
+        results = repaginate(req, res, results, _start, _page, _end, _limit);
+      }
+    }
+
     if (!multiple) {
       results = results[0];
     }

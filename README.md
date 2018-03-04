@@ -7,7 +7,7 @@ So far this is a mix between two repositories:
    a wrapper around json-server to let it handle many to many relations
 
 I'm using [json-server](https://github.com/typicode/json-server) now,
-but this may change in the future. Probably graphql would be more logical.
+but this ~~may~~ should change in the future. Probably graphql would be more logical.
 
 ## Usage
 
@@ -46,7 +46,12 @@ but this may change in the future. Probably graphql would be more logical.
   [/posts?_only=createdAt](http://localhost:3000/posts?_only=createdAt)
 - tags with post count (cheap sum) -
   [/tags?_include=posts&_count=posts](http://localhost:3000/tags?_include=posts&_count=posts)
-- posts that has the tag id#3 (object separator is @)
-  [/posts?_limit=5&_page=1&tags@id_includes=2](http://localhost:3000/posts?_limit=5&_page=1&tags@id_includes=2)
-  - tags is an array of objects (`[{id: 1, name: 'foo'}, {id: 2, name: 'bar'}]`)
-  - for simple arrays omit the @: `tagIds: [1, 2, 3]` -> `&tagIds_includes=2`
+
+## Broken stuff
+
+Deep filtering. At this point JSON-server seems to be unmaintained, it's not exactly extendable (mixins.js for example is buried deep in the library), pull requests are piled up and so on.
+
+Hackish deep filter for now:
+
+- array of numbers: `/posts?tagIds_includes=2`
+- array of objects: `/posts?_include=tags&tags@id_includes=2`
