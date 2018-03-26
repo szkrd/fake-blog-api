@@ -55,3 +55,5 @@ Hackish deep filter for now:
 
 - array of numbers: `/posts?tagIds_includes=2`
 - array of objects: `/posts?_include=tags&tags@id_includes=2`
+- properties of an object: `/posts?_expand=category&category@slug_includes=foobar`  
+  (the readme says that deepfiltering should work, but it [will not](https://github.com/typicode/json-server/issues/608) with expanded resources)
